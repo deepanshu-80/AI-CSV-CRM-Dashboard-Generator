@@ -1,0 +1,191 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: GrowEasy AI-powered CSV Importer API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: csv
+    description: CSV upload and AI import operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /csv/upload:
+    post:
+      operationId: uploadCsv
+      tags: [csv]
+      summary: Upload and preview a CSV file
+      description: Parse CSV and return a preview of rows. No AI processing happens here. Send as multipart/form-data with field name 'file'.
+      responses:
+        "200":
+          description: CSV parsed successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CsvPreview"
+        "400":
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /csv/import:
+    post:
+      operationId: importCsv
+      tags: [csv]
+      summary: Import CSV with AI extraction
+      description: Run AI extraction on uploaded CSV and return CRM records. Send as multipart/form-data with field name 'file'. Call only after user confirms.
+      responses:
+        "200":
+          description: Import completed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImportResult"
+        "400":
+          description: Invalid file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+        "500":
+          description: AI processing error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    CsvPreview:
+      type: object
+      properties:
+        headers:
+          type: array
+          items:
+            type: string
+        rows:
+          type: array
+          items:
+            type: object
+            additionalProperties:
+              type: string
+        totalRows:
+          type: integer
+        fileName:
+          type: string
+      required:
+        - headers
+        - rows
+        - totalRows
+        - fileName
+
+    CrmRecord:
+      type: object
+      properties:
+        created_at:
+          type: ["string", "null"]
+        name:
+          type: ["string", "null"]
+        email:
+          type: ["string", "null"]
+        country_code:
+          type: ["string", "null"]
+        mobile_without_country_code:
+          type: ["string", "null"]
+        company:
+          type: ["string", "null"]
+        city:
+          type: ["string", "null"]
+        state:
+          type: ["string", "null"]
+        country:
+          type: ["string", "null"]
+        lead_owner:
+          type: ["string", "null"]
+        crm_status:
+          type: ["string", "null"]
+        crm_note:
+          type: ["string", "null"]
+        data_source:
+          type: ["string", "null"]
+        possession_time:
+          type: ["string", "null"]
+        description:
+          type: ["string", "null"]
+
+    SkippedRecord:
+      type: object
+      properties:
+        rowIndex:
+          type: integer
+        reason:
+          type: string
+        rawData:
+          type: object
+          additionalProperties:
+            type: string
+      required:
+        - rowIndex
+        - reason
+        - rawData
+
+    ImportResult:
+      type: object
+      properties:
+        records:
+          type: array
+          items:
+            $ref: "#/components/schemas/CrmRecord"
+        skipped:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkippedRecord"
+        totalImported:
+          type: integer
+        totalSkipped:
+          type: integer
+        totalProcessed:
+          type: integer
+      required:
+        - records
+        - skipped
+        - totalImported
+        - totalSkipped
+        - totalProcessed
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: ["string", "null"]
+      required:
+        - error

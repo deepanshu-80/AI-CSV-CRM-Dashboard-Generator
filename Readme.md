@@ -9,9 +9,6 @@ An AI-powered CSV importer that intelligently maps any CSV format (Facebook Ads,
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
 
-## Required Environment Variables
-
-- `Gemini_API_KEY` — Gemini API key for AI extraction (gemini)
 
 ## Stack
 

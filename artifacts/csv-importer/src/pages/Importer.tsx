@@ -87,7 +87,9 @@ export default function Importer() {
       const form = new FormData();
       form.append('file', fileToUpload);
       
-      const res = await fetch(`${import.meta.env.BASE_URL}api/csv/upload`, { 
+      const API = import.meta.env.VITE_API_BASE;
+
+      const res = await fetch(`${API}/api/csv/upload`, { 
         method: 'POST', 
         body: form 
       });
@@ -119,7 +121,9 @@ export default function Importer() {
       const form = new FormData();
       form.append('file', file);
       
-      const res = await fetch(`${import.meta.env.BASE_URL}api/csv/import`, { 
+      const API = import.meta.env.VITE_API_BASE;
+
+    const res = await fetch(`${API}/api/csv/import`, { 
         method: 'POST', 
         body: form 
       });

@@ -166,7 +166,7 @@ async function processRowBatch(
   for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
     try {
       const response = await genAI.models.generateContent({
-        model: "gemini-2.5-flash",
+        model: "Gemini 3.1 Flash Lite",
         contents: `${CRM_SYSTEM_PROMPT}\n\nExtract CRM fields from the following ${rows.length} CSV record(s) and return ONLY a valid JSON object with a "records" array. Do not include any explanation, markdown, or extra text.\n\n${userContent}`,
         config: {
           temperature: 0,

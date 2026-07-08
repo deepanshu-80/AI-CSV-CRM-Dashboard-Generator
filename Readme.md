@@ -14,7 +14,7 @@ An AI-powered CSV importer that intelligently maps any CSV format (Facebook Ads,
 
 - pnpm workspaces, Node.js 24, TypeScript 5.9
 - Frontend: React + Vite, Framer Motion, Tailwind CSS, shadcn/ui, next-themes
-- API: Express 5 + multer (file upload) + csv-parse + OpenAI SDK
+- API: Express 5 + multer (file upload) + csv-parse + Gemini AI
 
 ## Where Things Live
 
@@ -37,14 +37,5 @@ An AI-powered CSV importer that intelligently maps any CSV format (Facebook Ads,
 
 - Uses `gemini 2.5 model` with structured JSON output (`{ "records": [...] }`)
 - Processes CSV rows in batches of 20
-- 3 automatic retries per batch with exponential backoff
+- 5 automatic retries per batch with exponential backoff
 - Records missing both email and mobile are skipped with a reason
-
-## Architecture Decisions
-
-- Stateless design — no DB needed; file is held in memory during request
-- `response_format: { type: "json_object" }` with a wrapper object ensures deterministic AI output (array inside `records` key)
-- Multer error middleware catches file-type/size errors before route handlers and returns consistent JSON
-- Google Fonts `@import` placed before Tailwind imports in CSS to satisfy PostCSS ordering
-
-
